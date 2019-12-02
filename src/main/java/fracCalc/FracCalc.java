@@ -45,59 +45,153 @@ public class FracCalc {
 		String operand2 = input.substring(space + 3, input.length()); // substring of space after operator to the end
 
 		// Parsing fractions: Operand 1
-		parseOperand1(operand1);
-
-		// Parsing fractions: Operand 2
-		return parseOperand2(operand2);
-
-	}
-
-// TODO: Fill in the space below with any helper methods that you think you will
-// need
-
-	public static String parseOperand1(String op1) {
-		int slash1 = op1.indexOf("/");
-		String whole1 = op1;
+		String whole1 = operand1;
 		String numerator1 = "";
 		String denominator1 = "";
+		int slash1 = operand1.indexOf("/");
+
 		if (slash1 > 0) {
-			int underscore1 = op1.indexOf("_");
+			int underscore1 = operand1.indexOf("_");
 			if (underscore1 > 0) {
-				whole1 = op1.substring(0, underscore1);
-				numerator1 = op1.substring(underscore1 + 1, slash1);
-				denominator1 = op1.substring(slash1 + 1, op1.length());
-				return "whole:" + whole1 + " numerator:" + numerator1 + " denominator:" + denominator1;
+				whole1 = operand1.substring(0, underscore1);
+				numerator1 = operand1.substring(underscore1 + 1, slash1);
+				denominator1 = operand1.substring(slash1 + 1, operand1.length());
 			} else {
 				whole1 = "0";
-				return "whole:" + whole1 + " numerator:" + numerator1 + " denominator:" + denominator1;
+				numerator1 = operand1.substring(underscore1 + 1, slash1);
+				denominator1 = operand1.substring(slash1 + 1, operand1.length());
 			}
-		} else {
-			return "whole:" + whole1 + " numerator:" + numerator1 + " denominator:" + denominator1;
-		}
-	}
 
-	public static String parseOperand2(String op2) {
-		int slash2 = op2.indexOf("/");
-		String whole2 = op2;
+		} else {
+			numerator1 = "0";
+			denominator1 = "1";
+		}
+
+		// Parsing fractions: Operand 2
+		String whole2 = operand2;
 		String numerator2 = "";
 		String denominator2 = "";
+		int slash2 = operand2.indexOf("/");
+
 		if (slash2 > 0) {
-			int underscore2 = op2.indexOf("_");
+			int underscore2 = operand2.indexOf("_");
 			if (underscore2 > 0) {
-				whole2 = op2.substring(0, underscore2);
-				numerator2 = op2.substring(underscore2 + 1, slash2);
-				denominator2 = op2.substring(slash2 + 1, op2.length());
-				return "whole:" + whole2 + " numerator:" + numerator2 + " denominator:" + denominator2;
+				whole2 = operand2.substring(0, underscore2);
+				numerator2 = operand2.substring(underscore2 + 1, slash2);
+				denominator2 = operand2.substring(slash2 + 1, operand2.length());
 			} else {
 				whole2 = "0";
-				numerator2 = op2.substring(underscore2 + 1, slash2);
-				denominator2 = op2.substring(slash2 + 1, op2.length());
-				return "whole:" + whole2 + " numerator:" + numerator2 + " denominator:" + denominator2;
+				numerator2 = operand2.substring(underscore2 + 1, slash2);
+				denominator2 = operand2.substring(slash2 + 1, operand2.length());
 			}
+
 		} else {
 			numerator2 = "0";
 			denominator2 = "1";
-			return "whole:" + whole2 + " numerator:" + numerator2 + " denominator:" + denominator2;
+		}
+
+		/*
+		 * System.out.println(whole1 + " " + numerator1 + " " + denominator1);
+		 * System.out.println(operator); System.out.println(whole2 + " " + numerator2 +
+		 * " " + denominator2);
+		 */
+
+		int int_whole1 = Integer.parseInt(whole1);
+		int int_numerator1 = Integer.parseInt(numerator1);
+		int int_denominator1 = Integer.parseInt(denominator1);
+
+		int int_whole2 = Integer.parseInt(whole2);
+		int int_numerator2 = Integer.parseInt(numerator2);
+		int int_denominator2 = Integer.parseInt(denominator2);
+
+		/*
+		 * System.out.println(int_whole1 + " " + int_numerator1 + " " +
+		 * int_denominator1); System.out.println(int_whole2 + " " + int_numerator2 + " "
+		 * + int_denominator2);
+		 */
+
+		// convert to improper fraction
+		int_numerator1 += int_denominator1 * Math.abs(int_whole1);
+		if (int_whole1 < 0) {
+			int_numerator1 *= -1;
+		}
+
+		int_numerator2 += int_denominator2 * Math.abs(int_whole2);
+		if (int_whole2 < 0) {
+			int_numerator2 *= -1;
+		}
+
+		int final_numerator = 0;
+		int final_denominator = 0;
+		int final_whole = 0;
+
+		// addition calculation
+		// multiply whole values to fraction to get a common denominator
+
+		if (operator.equals("+")) {
+			int_numerator1 *= int_denominator2;
+			int_numerator2 *= int_denominator1;
+
+			// show denominator value is correct
+			int temp_denominator = int_denominator1;
+			int_denominator1 *= int_denominator2;
+			int_denominator2 *= temp_denominator;
+
+			final_numerator = int_numerator1 + int_numerator2;
+			final_denominator = int_denominator1;
+		}
+
+		// subtraction calculation
+		if (operator.equals("-")) {
+			int_numerator1 *= int_denominator2;
+			int_numerator2 *= int_denominator1;
+
+			// show denominator value is correct
+			int temp_denominator = int_denominator1;
+			int_denominator1 *= int_denominator2;
+			int_denominator2 *= temp_denominator;
+
+			final_numerator = int_numerator1 - int_numerator2;
+			final_denominator = int_denominator2;
+		}
+		// multiplication calculation
+		if (operator.equals("*")) {
+			final_numerator = int_numerator1 * int_numerator2;
+			final_denominator = int_denominator1 * int_denominator2;
+		}
+
+		// division calculation
+		if (operator.equals("/")) {
+			final_numerator = int_numerator1 * int_denominator2;
+			final_denominator = int_denominator1 * int_numerator2;
+		}
+
+		// convert to mixed fraction if numerator is positive
+		while (final_numerator / final_denominator >= 1) {
+			final_numerator -= final_denominator;
+			final_whole += 1;
+		}
+
+		// convert to mixed fraction if numerator is negative
+		while (final_numerator / final_denominator <= -1) {
+			final_numerator += final_denominator;
+			final_whole -= 1;
+		}
+
+		if (final_whole != 0) {
+			final_numerator = Math.abs(final_numerator);
+			final_denominator = Math.abs(final_denominator);
+		}
+		// final output
+		if (final_whole == 0) {
+			return final_numerator + "/" + final_denominator;
+		} else if (final_numerator == 0 && final_denominator == 1) {
+			return final_whole + "";
+		} else {
+			return final_whole + "_" + final_numerator + "/" + final_denominator;
 		}
 	}
 }
+
+// TODO: Fill in the space below with any helper methods that you think you will
+// need
