@@ -44,31 +44,24 @@ public class FracCalc {
 
 		String new_String1 = input.substring(space + 1, input.length());
 		int space2 = new_String1.indexOf(" "); // find the index of the second space
-		String operator = new_String1.substring(0, space2); // operator is always 1 in length
+		String operator = new_String1.substring(0, space2); // operator is between the first space and the second space
 
 		String new_String2 = new_String1.substring(space2, new_String1.length());
-		String operand2 = new_String2.substring(space2, new_String2.length()); // substring of space after operator to
-																				// the end
+		String operand2 = new_String2.substring(space2, new_String2.length()); // substring of space after operator to the end
+																				
 
+		// Multiple operations
 		while (operand2.indexOf(" ") > 0) {
 			int space3 = operand2.indexOf(" ");
 			String value = operand2.substring(0, space3);
-			//System.out.println("value:" + value + ".");
-			String new_String3 = operand2.substring(space3+1, operand2.length());
+			String new_String3 = operand2.substring(space3 + 1, operand2.length());
 			int space4 = new_String3.indexOf(" ");
-			//System.out.println("new_String3:" + new_String3 + ".");
-			String operator2 = new_String3.substring(space4-1,space4);
-			//System.out.println("operator2:" + operator2  + ".");
-			operand2 = new_String3.substring(space4+1, new_String3.length());
-			operand1 = produceAnswer(operand1 + " "+ operator + " " + value );
+			String operator2 = new_String3.substring(space4 - 1, space4);
+			operand2 = new_String3.substring(space4 + 1, new_String3.length());
+			String new_equation = operand1 + " " + operator + " " + value;
+			operand1 = produceAnswer(new_equation);
 			operator = operator2;
-			//System.out.println(operand1);
-			//System.out.println(operator);
-			//System.out.println(operand2);
-			//System.out.println();
 		}
-		
-		
 
 		// Parsing fractions: Operand 1
 		String whole1 = operand1; // hi_
@@ -116,12 +109,7 @@ public class FracCalc {
 			denominator2 = "1";
 		}
 
-		/*
-		 * System.out.println(whole1 + " " + numerator1 + " " + denominator1);
-		 * System.out.println(operator); System.out.println(whole2 + " " + numerator2 +
-		 * " " + denominator2);
-		 */
-
+		// change strings to integers
 		int int_whole1 = Integer.parseInt(whole1);
 		int int_numerator1 = Integer.parseInt(numerator1);
 		int int_denominator1 = Integer.parseInt(denominator1);
@@ -129,12 +117,6 @@ public class FracCalc {
 		int int_whole2 = Integer.parseInt(whole2);
 		int int_numerator2 = Integer.parseInt(numerator2);
 		int int_denominator2 = Integer.parseInt(denominator2);
-
-		/*
-		 * System.out.println(int_whole1 + " " + int_numerator1 + " " +
-		 * int_denominator1); System.out.println(int_whole2 + " " + int_numerator2 + " "
-		 * + int_denominator2);
-		 */
 
 		// convert to improper fraction
 		int_numerator1 += int_denominator1 * Math.abs(int_whole1);
@@ -157,39 +139,25 @@ public class FracCalc {
 		}
 
 		// if operator is not correct syntax, quit
-
 		if (operator.length() > 1) {
 			return "Invalid input";
 		}
 
 		// addition calculation
 		// multiply whole values to fraction to get a common denominator
-
 		if (operator.equals("+")) {
 			int_numerator1 *= int_denominator2;
 			int_numerator2 *= int_denominator1;
-
-			// show denominator value is correct
-			int temp_denominator = int_denominator1;
-			int_denominator1 *= int_denominator2;
-			int_denominator2 *= temp_denominator;
-
 			final_numerator = int_numerator1 + int_numerator2;
-			final_denominator = int_denominator1;
+			final_denominator = int_denominator1 * int_denominator2;
 		}
 
 		// subtraction calculation
 		if (operator.equals("-")) {
 			int_numerator1 *= int_denominator2;
 			int_numerator2 *= int_denominator1;
-
-			// show denominator value is correct
-			int temp_denominator = int_denominator1;
-			int_denominator1 *= int_denominator2;
-			int_denominator2 *= temp_denominator;
-
 			final_numerator = int_numerator1 - int_numerator2;
-			final_denominator = int_denominator2;
+			final_denominator = int_denominator1 * int_denominator2;
 		}
 
 		// multiplication calculation
@@ -207,12 +175,12 @@ public class FracCalc {
 			final_denominator = int_denominator1 * int_numerator2;
 		}
 
-		//make numerator negative instead of the denominator 
+		// make numerator negative instead of the denominator
 		if (final_denominator < 0 && final_numerator > 0) {
 			final_denominator *= -1;
 			final_numerator *= -1;
 		}
-		
+
 		// convert to mixed fraction if numerator is positive
 		while (final_numerator / final_denominator >= 1) {
 			final_numerator -= final_denominator;
@@ -244,8 +212,7 @@ public class FracCalc {
 		if (final_whole == 0) {
 			if (final_numerator == 0) {
 				return "0";
-			}
-			else {
+			} else {
 				return final_numerator + "/" + final_denominator;
 			}
 		} else if (final_numerator == 0 || final_denominator == 1) {
