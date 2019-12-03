@@ -39,13 +39,39 @@ public class FracCalc {
 		// TODO: Implement this function to produce the solution to the input
 
 		// Parsing one line of input
-		int space = input.indexOf(" "); // find the index of the first space and use it as reference
+		int space = input.indexOf(" "); // find the index of the first space
 		String operand1 = input.substring(0, space); // substring of beginning to space before operator
-		String operator = input.substring(space + 1, space + 2); // operator is always 1 in length
-		String operand2 = input.substring(space + 3, input.length()); // substring of space after operator to the end
+
+		String new_String1 = input.substring(space + 1, input.length());
+		int space2 = new_String1.indexOf(" "); // find the index of the second space
+		String operator = new_String1.substring(0, space2); // operator is always 1 in length
+
+		String new_String2 = new_String1.substring(space2, new_String1.length());
+		String operand2 = new_String2.substring(space2, new_String2.length()); // substring of space after operator to
+																				// the end
+
+		while (operand2.indexOf(" ") > 0) {
+			int space3 = operand2.indexOf(" ");
+			String value = operand2.substring(0, space3);
+			//System.out.println("value:" + value + ".");
+			String new_String3 = operand2.substring(space3+1, operand2.length());
+			int space4 = new_String3.indexOf(" ");
+			//System.out.println("new_String3:" + new_String3 + ".");
+			String operator2 = new_String3.substring(space4-1,space4);
+			//System.out.println("operator2:" + operator2  + ".");
+			operand2 = new_String3.substring(space4+1, new_String3.length());
+			operand1 = produceAnswer(operand1 + " "+ operator + " " + value );
+			operator = operator2;
+			//System.out.println(operand1);
+			//System.out.println(operator);
+			//System.out.println(operand2);
+			//System.out.println();
+		}
+		
+		
 
 		// Parsing fractions: Operand 1
-		String whole1 = operand1;
+		String whole1 = operand1; // hi_
 		String numerator1 = "";
 		String denominator1 = "";
 		int slash1 = operand1.indexOf("/");
@@ -125,6 +151,17 @@ public class FracCalc {
 		int final_denominator = 0;
 		int final_whole = 0;
 
+		// if denominator is 0, quit
+		if (int_denominator1 == 0 || int_denominator2 == 0) {
+			return "Invalid input";
+		}
+
+		// if operator is not correct syntax, quit
+
+		if (operator.length() > 1) {
+			return "Invalid input";
+		}
+
 		// addition calculation
 		// multiply whole values to fraction to get a common denominator
 
@@ -154,10 +191,14 @@ public class FracCalc {
 			final_numerator = int_numerator1 - int_numerator2;
 			final_denominator = int_denominator2;
 		}
+
 		// multiplication calculation
 		if (operator.equals("*")) {
 			final_numerator = int_numerator1 * int_numerator2;
 			final_denominator = int_denominator1 * int_denominator2;
+			if (int_numerator1 == 0 || int_numerator2 == 0) {
+				return 0 + "";
+			}
 		}
 
 		// division calculation
@@ -166,6 +207,12 @@ public class FracCalc {
 			final_denominator = int_denominator1 * int_numerator2;
 		}
 
+		//make numerator negative instead of the denominator 
+		if (final_denominator < 0 && final_numerator > 0) {
+			final_denominator *= -1;
+			final_numerator *= -1;
+		}
+		
 		// convert to mixed fraction if numerator is positive
 		while (final_numerator / final_denominator >= 1) {
 			final_numerator -= final_denominator;
@@ -178,14 +225,30 @@ public class FracCalc {
 			final_whole -= 1;
 		}
 
+		// remove signs from numerator and denominator if there is a whole number
 		if (final_whole != 0) {
 			final_numerator = Math.abs(final_numerator);
 			final_denominator = Math.abs(final_denominator);
 		}
+
+		// reduce fraction
+		int gcd = 1;
+		for (int i = 1; i <= Math.abs(final_numerator) && i <= Math.abs(final_denominator); i++) {
+			if (final_numerator % i == 0 && final_denominator % i == 0)
+				gcd = i;
+		}
+		final_numerator /= gcd;
+		final_denominator /= gcd;
+
 		// final output
 		if (final_whole == 0) {
-			return final_numerator + "/" + final_denominator;
-		} else if (final_numerator == 0 && final_denominator == 1) {
+			if (final_numerator == 0) {
+				return "0";
+			}
+			else {
+				return final_numerator + "/" + final_denominator;
+			}
+		} else if (final_numerator == 0 || final_denominator == 1) {
 			return final_whole + "";
 		} else {
 			return final_whole + "_" + final_numerator + "/" + final_denominator;
